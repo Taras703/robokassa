@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Оплата заказа</h2>
+<p>Заказ № {{ order_id }}</p>
+<p>Сумма: {{ order_amount }}</p>
+<p>Описание: {{ order_description }}</p>
+
+<form action="{{ url_for('create_payment') }}" method="POST">
+    <input type="hidden" name="order_id" value="{{ order_id }}">
+    <input type="hidden" name="amount" value="{{ order_amount }}">
+    <input type="hidden" name="description" value="{{ order_description }}">
+    <button type="submit">Оплатить</button>
+</form>
+{% endblock %}
