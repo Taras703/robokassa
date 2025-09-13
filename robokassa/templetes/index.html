@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Оплата заказа - Платежная система{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card payment-card">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <h2 class="card-title mb-0">
+                    <i class="fas fa-shopping-cart me-2"></i>Оплата заказа
+                </h2>
+            </div>
+            <div class="card-body p-5">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="text-primary mb-4">
+                            <i class="fas fa-info-circle me-2"></i>Информация о заказе
+                        </h4>
+                        <div class="bg-light p-4 rounded mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fw-bold">Номер заказа:</span>
+                                <span class="badge bg-primary fs-6">#{{ order_id }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fw-bold">Сумма к оплате:</span>
+                                <span class="fs-5 text-success fw-bold">{{ order_amount }} ₽</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <span class="fw-bold">Описание:</span>
+                                <span class="text-end">{{ order_description }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4 class="text-primary mb-4">
+                            <i class="fas fa-credit-card me-2"></i>Оплата
+                        </h4>
+                        
+                        <form action="{{ url_for('create_payment') }}" method="POST" class="needs-validation" novalidate>
+                            <div class="mb-4">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>Email для уведомлений
+                                </label>
+                                <input type="email" class="form-control form-control-lg" id="email" name="email"
+                                       placeholder="your@email.com" required>
+                                <div class="invalid-feedback">
+                                    Пожалуйста, введите корректный email адрес.
+                                </div>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-payment btn-lg text-white">
+                                    <i class="fas fa-lock me-2"></i>Перейти к оплате
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="mt-4 text-center">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Безопасная оплата через Робокассу
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if payment_status %}
+        <div class="alert alert-dismissible fade show mt-4 text-center
+                    {% if payment_status == 'success' %}alert-success
+                    {% elif payment_status == 'fail' %}alert-danger
+                    {% else %}alert-warning{% endif %}" role="alert">
+            {% if payment_status == 'success' %}
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Успешно!</strong> Оплата прошла успешно!
+            {% elif payment_status == 'fail' %}
+                <i class="fas fa-times-circle me-2"></i>
+                <strong>Ошибка!</strong> Оплата не удалась. Попробуйте ещё раз.
+            {% else %}
+                <i class="fas fa-clock me-2"></i>
+                <strong>Ожидание...</strong> Ожидание подтверждения оплаты...
+            {% endif %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Валидация формы
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}
